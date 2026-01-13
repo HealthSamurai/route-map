@@ -8,7 +8,12 @@
 
 (defn- get-params [node]
   (when (map? node)
-    (filter (fn [[k v]] (vector? k)) node)))
+    (reduce-kv
+     (fn [acc k v]
+       (if (vector? k)
+         (conj acc [k v])
+         acc))
+     [] node)))
 
 (defn- get-param [node]
   (first (filter (fn [[k v]] (vector? k)) node)))
@@ -107,7 +112,7 @@
 (defn- first-not-nil [coll]
   (let [not-nils (filter #(not= nil %) coll)
         all-nils (nil? not-nils)]
-    (if all-nils 
+    (if all-nils
       nil
       (first not-nils))))
 
